@@ -10,6 +10,7 @@ This is a Plugin Archive for Oracle Fusion Field Service that displays activity 
 - Offline functionality with Service Worker implementation
 - Responsive design for desktop, tablet, and mobile devices
 - Plugin API integration for seamless Oracle Fusion Field Service communication
+- **Simplified deployment** - No configuration files needed, all settings managed through Oracle interface
 
 ---
 
@@ -17,7 +18,7 @@ This is a Plugin Archive for Oracle Fusion Field Service that displays activity 
 
 ### Prerequisites
 - Oracle Fusion Field Service administrator access
-- The `ofs-activity-properties-plugin.zip` file
+- The `ofs-activity-properties-plugin-no-config.zip` file
 
 ### Upload Process
 1. **Access Oracle Fusion Field Service Administration**
@@ -33,7 +34,7 @@ This is a Plugin Archive for Oracle Fusion Field Service that displays activity 
      - **Version**: 1.0.0
 
 3. **Upload Archive**
-   - Choose the `ofs-activity-properties-plugin.zip` file
+   - Choose the `ofs-activity-properties-plugin-no-config.zip` file
    - Wait for upload completion and validation
    - Verify all files are properly loaded
 
@@ -96,7 +97,7 @@ The plugin needs access to these activity properties. Configure them in Configur
 ## STEP 4: Configure Plugin Parameters
 
 ### Plugin Context Settings
-In the plugin configuration screen:
+Configure the plugin directly in Oracle Fusion Field Service:
 
 1. **Activity Properties Context**
    - Enable all required activity properties
@@ -108,9 +109,9 @@ In the plugin configuration screen:
    - Configure resource assignment display
 
 3. **Security Settings**
-   - Enable HTTPS (automatically handled in Oracle environment)
-   - Configure CORS settings if needed
-   - Set content security policy
+   - HTTPS is automatically handled in Oracle environment
+   - No additional configuration files needed
+   - Plugin uses standard Oracle security policies
 
 ---
 
@@ -167,9 +168,10 @@ In the plugin configuration screen:
 ### Custom Property Mapping
 To add additional activity properties:
 
-1. **Update Plugin Configuration**
-   - Add property to `plugin-config.xml`
+1. **Configure in Oracle Fusion Field Service**
+   - Add properties in Configuration → Properties → Activity Properties
    - Define property type and permissions
+   - Enable for Plugin API access
 
 2. **Modify Plugin Code** (Optional)
    - Add property display in `index.html`
