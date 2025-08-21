@@ -222,9 +222,7 @@ class PluginAPI {
             apiVersion: this.apiVersion,
             method: 'getActivityProperties',
             properties: properties.length > 0 ? properties : [
-                'aid', 'cname', 'astatus', 'sla_window_start', 'sla_window_end',
-                'duration', 'atype', 'city', 'state', 'street', 'zip',
-                'resources', 'priority'
+                'aid', 'astatus'
             ],
             callId: this.generateCallId()
         };

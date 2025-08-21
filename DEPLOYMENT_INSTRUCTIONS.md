@@ -5,11 +5,12 @@
 This is a Plugin Archive for Oracle Fusion Field Service that displays activity properties within the Activity entity context. The plugin features a modern, responsive interface with real-time data synchronization and offline functionality.
 
 ### Plugin Features
-- Display key activity properties (ID, Customer, Status, Schedule, Type, Duration, Location, Resources, Priority)
+- Display essential activity properties (Activity ID and Status)
 - Real-time data updates when activity information changes
 - Offline functionality with Service Worker implementation
 - Responsive design for desktop, tablet, and mobile devices
 - Plugin API integration for seamless Oracle Fusion Field Service communication
+- **Simplified interface** - Clean, focused display of core activity data
 - **Simplified deployment** - No configuration files needed, all settings managed through Oracle interface
 
 ---
@@ -18,7 +19,7 @@ This is a Plugin Archive for Oracle Fusion Field Service that displays activity 
 
 ### Prerequisites
 - Oracle Fusion Field Service administrator access
-- The `ofs-activity-properties-plugin-no-config.zip` file
+- The `ofs-activity-properties-plugin-simple.zip` file
 
 ### Upload Process
 1. **Access Oracle Fusion Field Service Administration**
@@ -34,7 +35,7 @@ This is a Plugin Archive for Oracle Fusion Field Service that displays activity 
      - **Version**: 1.0.0
 
 3. **Upload Archive**
-   - Choose the `ofs-activity-properties-plugin-no-config.zip` file
+   - Choose the `ofs-activity-properties-plugin-simple.zip` file
    - Wait for upload completion and validation
    - Verify all files are properly loaded
 
@@ -47,26 +48,11 @@ The plugin needs access to these activity properties. Configure them in Configur
 
 #### Core Properties
 - `aid` (Activity ID) - String, Read-only
-- `cname` (Customer Name) - String, Read-only  
 - `astatus` (Activity Status) - Enumeration, Read/Write
-- `sla_window_start` (Scheduled Start) - DateTime, Read-only
-- `sla_window_end` (Scheduled End) - DateTime, Read-only
-- `duration` (Duration) - Integer, Read-only
-- `atype` (Activity Type) - String, Read-only
-
-#### Location Properties
-- `street` (Street Address) - String, Read-only
-- `city` (City) - String, Read-only
-- `state` (State/Province) - String, Read-only
-- `zip` (ZIP/Postal Code) - String, Read-only
-
-#### Resource Properties
-- `resources` (Assigned Resources) - ResourceArray, Read-only
-- `priority` (Priority) - String, Read-only
 
 ### Property Configuration Steps
 1. Go to Configuration → Properties → Activity Properties
-2. Ensure all listed properties are defined and accessible
+2. Ensure `aid` and `astatus` properties are defined and accessible
 3. Configure read/write permissions as specified above
 4. Enable properties for Plugin API access
 

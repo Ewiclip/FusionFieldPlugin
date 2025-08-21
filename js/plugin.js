@@ -64,14 +64,7 @@ class ActivityPropertiesPlugin {
             
             // Activity properties
             activityId: document.getElementById('activity-id'),
-            customerName: document.getElementById('customer-name'),
             activityStatus: document.getElementById('activity-status'),
-            scheduledTime: document.getElementById('scheduled-time'),
-            activityType: document.getElementById('activity-type'),
-            duration: document.getElementById('duration'),
-            location: document.getElementById('location'),
-            assignedResource: document.getElementById('assigned-resource'),
-            priority: document.getElementById('priority'),
             
             // Controls
             refreshButton: document.getElementById('refresh-data'),
@@ -233,14 +226,7 @@ class ActivityPropertiesPlugin {
             
             // Update activity properties
             this.updateElement('activityId', data.aid || data.activityId);
-            this.updateElement('customerName', data.cname || data.customerName);
             this.updateActivityStatus(data.astatus || data.status);
-            this.updateScheduledTime(data.sla_window_start, data.sla_window_end);
-            this.updateElement('activityType', data.atype || data.activityType);
-            this.updateDuration(data.duration);
-            this.updateLocation(data);
-            this.updateElement('assignedResource', this.formatResourceInfo(data.resources));
-            this.updateElement('priority', data.priority);
             
             // Update last updated time
             this.lastUpdateTime = new Date();
