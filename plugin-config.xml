@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Oracle Fusion Field Service Plugin Configuration
+Activity Properties Plugin - Configuration Template
+-->
+<plugin-configuration>
+    <metadata>
+        <name>Activity Properties Plugin</name>
+        <version>1.0.0</version>
+        <description>Display activity properties within the Activity entity context using HTML and Plugin API integration</description>
+        <author>Oracle Fusion Field Service Plugin Developer</author>
+        <contact>plugin-support@company.com</contact>
+        <created>2025-08-21</created>
+        <last-modified>2025-08-21</last-modified>
+    </metadata>
+
+    <!-- Plugin Type Configuration -->
+    <plugin-type>PlugIn Archive</plugin-type>
+    
+    <!-- Plugin Entry Point -->
+    <entry-point>index.html</entry-point>
+    
+    <!-- Plugin Context Configuration -->
+    <contexts>
+        <!-- Activity Entity Context -->
+        <context>
+            <name>Activity Details</name>
+            <entity>Activity</entity>
+            <screen>Activity Details</screen>
+            <button-label>Activity Properties</button-label>
+            <button-position>toolbar</button-position>
+            <icon>activity</icon>
+        </context>
+        
+        <!-- Activity List Context -->
+        <context>
+            <name>Activity List</name>
+            <entity>Activity</entity>
+            <screen>Activity List</screen>
+            <button-label>Properties</button-label>
+            <button-position>row-action</button-position>
+            <icon>info</icon>
+        </context>
+    </contexts>
+
+    <!-- Activity Properties Configuration -->
+    <activity-properties>
+        <!-- Core Activity Properties -->
+        <property>
+            <name>aid</name>
+            <label>Activity ID</label>
+            <type>String</type>
+            <required>true</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <property>
+            <name>cname</name>
+            <label>Customer Name</label>
+            <type>String</type>
+            <required>false</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <property>
+            <name>astatus</name>
+            <label>Activity Status</label>
+            <type>Enumeration</type>
+            <required>true</required>
+            <read-only>false</read-only>
+            <allowed-values>
+                <value>pending</value>
+                <value>started</value>
+                <value>complete</value>
+                <value>cancelled</value>
+                <value>suspended</value>
+            </allowed-values>
+        </property>
+        
+        <property>
+            <name>sla_window_start</name>
+            <label>Scheduled Start Time</label>
+            <type>DateTime</type>
+            <required>false</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <property>
+            <name>sla_window_end</name>
+            <label>Scheduled End Time</label>
+            <type>DateTime</type>
+            <required>false</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <property>
+            <name>duration</name>
+            <label>Duration</label>
+            <type>Integer</type>
+            <required>false</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <property>
+            <name>atype</name>
+            <label>Activity Type</label>
+            <type>String</type>
+            <required>false</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <!-- Location Properties -->
+        <property>
+            <name>street</name>
+            <label>Street Address</label>
+            <type>String</type>
+            <required>false</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <property>
+            <name>city</name>
+            <label>City</label>
+            <type>String</type>
+            <required>false</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <property>
+            <name>state</name>
+            <label>State/Province</label>
+            <type>String</type>
+            <required>false</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <property>
+            <name>zip</name>
+            <label>ZIP/Postal Code</label>
+            <type>String</type>
+            <required>false</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <!-- Resource Properties -->
+        <property>
+            <name>resources</name>
+            <label>Assigned Resources</label>
+            <type>ResourceArray</type>
+            <required>false</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <property>
+            <name>priority</name>
+            <label>Priority</label>
+            <type>String</type>
+            <required>false</required>
+            <read-only>true</read-only>
+        </property>
+    </activity-properties>
+
+    <!-- Resource Properties Configuration -->
+    <resource-properties>
+        <property>
+            <name>rid</name>
+            <label>Resource ID</label>
+            <type>String</type>
+            <required>true</required>
+            <read-only>true</read-only>
+        </property>
+        
+        <property>
+            <name>name</name>
+            <label>Resource Name</label>
+            <type>String</type>
+            <required>true</required>
+            <read-only>true</read-only>
+        </property>
+    </resource-properties>
+
+    <!-- Plugin API Configuration -->
+    <api-configuration>
+        <api-version>1</api-version>
+        <communication-method>postMessage</communication-method>
+        <ready-timeout>120000</ready-timeout> <!-- 2 minutes -->
+        <offline-support>true</offline-support>
+        <service-worker>sw.js</service-worker>
+    </api-configuration>
+
+    <!-- Security Configuration -->
+    <security>
+        <https-required>false</https-required> <!-- Will be HTTPS when deployed in Oracle environment -->
+        <cross-origin-policy>same-origin</cross-origin-policy>
+        <content-security-policy>
+            <script-src>self unsafe-inline https://cdn.jsdelivr.net</script-src>
+            <style-src>self unsafe-inline https://cdn.jsdelivr.net</style-src>
+            <connect-src>self</connect-src>
+            <img-src>self data: https:</img-src>
+            <font-src>self https://cdn.jsdelivr.net</font-src>
+        </content-security-policy>
+    </security>
+
+    <!-- Performance Configuration -->
+    <performance>
+        <cache-strategy>cache-first</cache-strategy>
+        <cache-duration>3600</cache-duration> <!-- 1 hour -->
+        <max-cache-size>50MB</max-cache-size>
+        <preload-resources>true</preload-resources>
+    </performance>
+
+    <!-- Deployment Configuration -->
+    <deployment>
+        <archive-format>ZIP</archive-format>
+        <max-archive-size>25MB</max-archive-size>
+        <compression>true</compression>
+        <file-types>
+            <allowed>html</allowed>
+            <allowed>css</allowed>
+            <allowed>js</allowed>
+            <allowed>json</allowed>
+            <allowed>xml</allowed>
+            <allowed>svg</allowed>
+            <allowed>txt</allowed>
+            <allowed>md</allowed>
+        </file-types>
+        <excluded-files>
+            <exclude>*.log</exclude>
+            <exclude>*.tmp</exclude>
+            <exclude>.git/**</exclude>
+            <exclude>node_modules/**</exclude>
+            <exclude>*.map</exclude>
+        </excluded-files>
+    </deployment>
+
+    <!-- Compatibility Configuration -->
+    <compatibility>
+        <minimum-ofs-version>21.A</minimum-ofs-version>
+        <supported-platforms>
+            <platform>web</platform>
+            <platform>mobile</platform>
+            <platform>tablet</platform>
+        </supported-platforms>
+        <supported-browsers>
+            <browser>Chrome 90+</browser>
+            <browser>Firefox 88+</browser>
+            <browser>Safari 14+</browser>
+            <browser>Edge 90+</browser>
+        </supported-browsers>
+    </compatibility>
+
+    <!-- Localization Configuration -->
+    <localization>
+        <default-locale>en-US</default-locale>
+        <supported-locales>
+            <locale>en-US</locale>
+            <locale>en-GB</locale>
+        </supported-locales>
+    </localization>
+
+    <!-- Validation Rules -->
+    <validation>
+        <validate-html>true</validate-html>
+        <validate-css>true</validate-css>
+        <validate-js>true</validate-js>
+        <validate-api-usage>true</validate-api-usage>
+        <validate-properties>true</validate-properties>
+    </validation>
+
+    <!-- Logging Configuration -->
+    <logging>
+        <level>info</level>
+        <console-output>true</console-output>
+        <remote-logging>false</remote-logging>
+    </logging>
+</plugin-configuration>
