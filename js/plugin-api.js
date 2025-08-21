@@ -1,6 +1,41 @@
 /**
  * Oracle Fusion Field Service Plugin API Integration
  * Handles communication with the Oracle Fusion Field Service application
+ * 
+ * ORACLE API CLIENT USAGE EXAMPLES:
+ * 
+ * // Initialize the API client
+ * const api = new PluginAPI();
+ * 
+ * // Test Oracle authentication
+ * const authResult = await api.oracleApiClient.testAuthentication();
+ * if (authResult.success) {
+ *     console.log('Authenticated as:', authResult.userInfo.userName);
+ * } else {
+ *     console.error('Auth failed:', authResult.message);
+ * }
+ * 
+ * // Get activity data
+ * const activityResult = await api.oracleApiClient.getActivityData('ACT-123');
+ * if (activityResult.success) {
+ *     console.log('Activity data:', activityResult.data);
+ * }
+ * 
+ * // Update activity
+ * const updateResult = await api.oracleApiClient.updateActivityData('ACT-123', {
+ *     astatus: 'completed',
+ *     notes: 'Work completed successfully'
+ * });
+ * 
+ * // Make custom API calls
+ * const response = await api.oracleApiClient.makeApiCall('/rest/ofscCore/v1/resources', 'GET');
+ * 
+ * EXTRACTING THE ORACLE API CLIENT:
+ * 
+ * To extract just the Oracle API client for use in other projects:
+ * 1. Copy the 'oracleApiClient' object (lines ~150-450)
+ * 2. Initialize it: oracleApiClient.init()
+ * 3. Use the methods: testAuthentication(), getActivityData(), etc.
  */
 
 class PluginAPI {
@@ -8,6 +43,9 @@ class PluginAPI {
         this.apiVersion = 1;
         this.isReady = false;
         this.isConnected = false;
+        this.isStandaloneMode = false;
+        this.isOracleConnected = false;
+        this.oracleTestInProgress = false;
         this.activityData = null;
         this.callbacks = {};
         this.messageQueue = [];
@@ -28,12 +66,56 @@ class PluginAPI {
     detectDevelopmentMode() {
         // Check if we're running standalone or in Oracle environment
         try {
-            return window.self === window.top || 
+            const isStandalone = window.self === window.top || 
                    location.hostname === 'localhost' || 
                    location.hostname.includes('replit') ||
                    location.hostname.includes('127.0.0.1');
+            
+            // If not standalone, check if we're in Oracle environment
+            if (!isStandalone) {
+                this.isOracleConnected = this.detectOracleEnvironment();
+            }
+            
+            return isStandalone;
         } catch (e) {
-            return false; // Probably in iframe, assume production
+            // Probably in iframe, check if it's Oracle
+            this.isOracleConnected = this.detectOracleEnvironment();
+            return false; // Assume production
+        }
+    }
+
+    /**
+     * Detect if we're running within Oracle Fusion Field Service
+     */
+    detectOracleEnvironment() {
+        try {
+            // Check for Oracle-specific indicators
+            const currentUrl = window.location.href;
+            const parentUrl = window.parent !== window ? window.parent.location.href : '';
+            
+            const oracleIndicators = [
+                'oracle.com',
+                'fusion',
+                'ofsc',
+                'fieldservice',
+                'activity'
+            ];
+            
+            const hasOracleIndicator = oracleIndicators.some(indicator => 
+                currentUrl.toLowerCase().includes(indicator) || 
+                parentUrl.toLowerCase().includes(indicator)
+            );
+            
+            console.log('[PluginAPI] Oracle environment detection:', {
+                currentUrl: currentUrl,
+                parentUrl: parentUrl,
+                hasOracleIndicator: hasOracleIndicator
+            });
+            
+            return hasOracleIndicator;
+        } catch (error) {
+            console.warn('[PluginAPI] Error detecting Oracle environment:', error);
+            return false;
         }
     }
 
@@ -43,8 +125,16 @@ class PluginAPI {
     init() {
         console.log('[PluginAPI] Initializing Oracle Fusion Field Service Plugin API');
         
+        // Initialize Oracle API client
+        this.oracleApiClient.init();
+        
         if (this.isDevelopmentMode) {
             console.log('[PluginAPI] Running in DEVELOPMENT MODE - simulating Oracle responses');
+        } else if (this.isOracleConnected) {
+            console.log('[PluginAPI] Running in ORACLE ENVIRONMENT - connecting to Oracle Fusion Field Service');
+        } else {
+            console.log('[PluginAPI] Running in STANDALONE MODE - Oracle not detected');
+            this.isStandaloneMode = true;
         }
         
         // Set up message listener
@@ -57,6 +147,9 @@ class PluginAPI {
                 if (this.isDevelopmentMode) {
                     console.log('[PluginAPI] Development mode - simulating plugin ready');
                     this.simulatePluginReady();
+                } else if (this.isStandaloneMode) {
+                    console.log('[PluginAPI] Standalone mode - no Oracle connection available');
+                    this.handleStandaloneMode();
                 } else {
                     this.handleError(new Error('Plugin ready timeout - failed to initialize within 2 minutes'));
                 }
@@ -69,11 +162,21 @@ class PluginAPI {
         // Set up connection monitoring
         this.setupConnectionMonitoring();
         
+        // Test Oracle authentication if not in development mode
+        if (!this.isDevelopmentMode && !this.isStandaloneMode) {
+            this.testOracleAuthentication();
+        }
+        
         // In development mode, simulate Oracle responses after a delay
         if (this.isDevelopmentMode) {
             setTimeout(() => {
                 this.simulateOracleResponses();
             }, 2000);
+        } else if (this.isStandaloneMode) {
+            // Quick timeout for standalone mode
+            setTimeout(() => {
+                this.handleStandaloneMode();
+            }, 3000);
         }
     }
 
@@ -242,13 +345,52 @@ class PluginAPI {
             return;
         }
         
+        // Try to get real data from Oracle API first
+        if (this.isOracleConnected) {
+            console.log('[PluginAPI] Requesting activity data from Oracle API...');
+            this.getRealActivityData();
+        } else {
+            // Fall back to postMessage method
+            console.log('[PluginAPI] Oracle API not available, using postMessage method');
+            this.requestActivityDataViaPostMessage();
+        }
+    }
+
+    /**
+     * Get real activity data from Oracle API
+     */
+    async getRealActivityData() {
+        try {
+            const result = await this.oracleApiClient.getActivityData();
+            
+            if (result.success) {
+                console.log('[PluginAPI] Real activity data retrieved from Oracle API');
+                this.activityData = result.data;
+                this.triggerEvent('activityLoaded', this.activityData);
+            } else {
+                console.warn('[PluginAPI] Failed to get real activity data:', result.message);
+                // Fall back to postMessage method
+                this.requestActivityDataViaPostMessage();
+            }
+            
+        } catch (error) {
+            console.error('[PluginAPI] Error getting real activity data:', error);
+            // Fall back to postMessage method
+            this.requestActivityDataViaPostMessage();
+        }
+    }
+
+    /**
+     * Request activity data via postMessage (fallback method)
+     */
+    requestActivityDataViaPostMessage() {
         const message = {
             apiVersion: this.apiVersion,
             method: 'getActivityData',
             callId: this.generateCallId()
         };
         
-        console.log('[PluginAPI] Requesting activity data');
+        console.log('[PluginAPI] Requesting activity data via postMessage');
         this.sendMessage(message);
     }
 
@@ -386,9 +528,25 @@ class PluginAPI {
      * Check connection status
      */
     checkConnection() {
-        // Simple connection check - can be enhanced with actual API ping
         const wasConnected = this.isConnected;
-        this.isConnected = navigator.onLine;
+        
+        // Check basic internet connectivity
+        const hasInternet = navigator.onLine;
+        
+        // Determine connection status based on mode
+        if (this.isDevelopmentMode) {
+            this.isConnected = hasInternet; // Always connected in dev mode
+        } else if (this.isStandaloneMode) {
+            this.isConnected = hasInternet; // Just internet for standalone
+        } else {
+            // For Oracle mode, we need both internet and Oracle connectivity
+            this.isConnected = hasInternet && this.isOracleConnected;
+            
+            // If we have internet but Oracle connection is uncertain, test it
+            if (hasInternet && !this.isOracleConnected && !this.oracleTestInProgress) {
+                this.testOracleConnection();
+            }
+        }
         
         if (wasConnected !== this.isConnected) {
             if (this.isConnected) {
@@ -396,6 +554,56 @@ class PluginAPI {
             } else {
                 this.triggerEvent('connectionLost');
             }
+        }
+    }
+
+    /**
+     * Test Oracle connection with real API calls
+     */
+    async testOracleConnection() {
+        if (this.oracleTestInProgress) return;
+        
+        this.oracleTestInProgress = true;
+        
+        console.log('[PluginAPI] Testing Oracle connection with real API...');
+        
+        try {
+            // Use the Oracle API client to test authentication
+            const authResult = await this.oracleApiClient.testAuthentication();
+            
+            if (authResult.success) {
+                this.isOracleConnected = true;
+                console.log('[PluginAPI] Oracle connection test successful');
+                this.triggerEvent('oracleConnectionRestored');
+            } else {
+                this.isOracleConnected = false;
+                console.warn('[PluginAPI] Oracle connection test failed:', authResult.message);
+                this.triggerEvent('oracleConnectionLost');
+            }
+            
+        } catch (error) {
+            this.isOracleConnected = false;
+            console.error('[PluginAPI] Oracle connection test error:', error);
+            this.triggerEvent('oracleConnectionLost');
+        } finally {
+            this.oracleTestInProgress = false;
+        }
+    }
+
+    /**
+     * Test Oracle authentication
+     */
+    async testOracleAuthentication() {
+        console.log('[PluginAPI] Testing Oracle authentication...');
+        const authResult = await this.oracleApiClient.testAuthentication();
+        if (authResult.success) {
+            console.log('[PluginAPI] Oracle authentication successful.');
+            this.isOracleConnected = true;
+            this.triggerEvent('oracleConnectionRestored');
+        } else {
+            console.error('[PluginAPI] Oracle authentication failed:', authResult.message);
+            this.isOracleConnected = false;
+            this.triggerEvent('oracleConnectionLost');
         }
     }
 
@@ -527,6 +735,19 @@ class PluginAPI {
     }
 
     /**
+     * Handle standalone mode (when Oracle is not detected)
+     */
+    handleStandaloneMode() {
+        console.warn('[PluginAPI] Oracle Fusion Field Service not detected. Running in standalone mode.');
+        this.isStandaloneMode = true;
+        this.isConnected = true; // Assume connected for standalone mode
+        this.isReady = true; // Assume ready for standalone mode
+        this.triggerEvent('standaloneMode');
+        this.triggerEvent('ready'); // Still trigger ready for consistency
+        this.requestActivityData(); // Still try to request activity data
+    }
+
+    /**
      * Cleanup
      */
     destroy() {
@@ -551,6 +772,401 @@ class PluginAPI {
         this.isConnected = false;
         this.activityData = null;
     }
+
+    /**
+     * Oracle API Client for authentication and data retrieval
+     */
+    oracleApiClient = {
+        baseUrl: null,
+        authToken: null,
+        sessionId: null,
+        
+        /**
+         * Initialize Oracle API client
+         */
+        init() {
+            // Try to detect Oracle base URL from current environment
+            this.baseUrl = this.detectOracleBaseUrl();
+            this.authToken = this.getAuthToken();
+            this.sessionId = this.getSessionId();
+            
+            console.log('[OracleAPI] Initialized with:', {
+                baseUrl: this.baseUrl,
+                hasAuthToken: !!this.authToken,
+                hasSessionId: !!this.sessionId
+            });
+        },
+        
+        /**
+         * Detect Oracle base URL from current environment
+         */
+        detectOracleBaseUrl() {
+            try {
+                // Check if we're in Oracle Fusion Field Service
+                const currentUrl = window.location.href;
+                const parentUrl = window.parent !== window ? window.parent.location.href : '';
+                
+                // Common Oracle Fusion Field Service URL patterns
+                const oraclePatterns = [
+                    /https:\/\/([^.]+)\.oracle\.com/,
+                    /https:\/\/([^.]+)\.fusion\.oracle\.com/,
+                    /https:\/\/([^.]+)\.ofsc\.oracle\.com/,
+                    /https:\/\/([^.]+)\.fieldservice\.oracle\.com/
+                ];
+                
+                for (const pattern of oraclePatterns) {
+                    const match = currentUrl.match(pattern) || parentUrl.match(pattern);
+                    if (match) {
+                        return `https://${match[1]}.oracle.com`;
+                    }
+                }
+                
+                // Fallback to current domain
+                return window.location.origin;
+            } catch (error) {
+                console.warn('[OracleAPI] Error detecting base URL:', error);
+                return window.location.origin;
+            }
+        },
+        
+        /**
+         * Get authentication token from various sources
+         */
+        getAuthToken() {
+            // Try multiple sources for auth token
+            const sources = [
+                // 1. Check for token in localStorage
+                () => localStorage.getItem('oracle_auth_token'),
+                // 2. Check for token in sessionStorage
+                () => sessionStorage.getItem('oracle_auth_token'),
+                // 3. Check for token in cookies
+                () => this.getCookie('oracle_auth_token'),
+                // 4. Check for OAuth token
+                () => localStorage.getItem('oracle_oauth_token'),
+                // 5. Check for JWT token
+                () => localStorage.getItem('oracle_jwt_token')
+            ];
+            
+            for (const source of sources) {
+                try {
+                    const token = source();
+                    if (token) {
+                        console.log('[OracleAPI] Found auth token from source');
+                        return token;
+                    }
+                } catch (error) {
+                    // Continue to next source
+                }
+            }
+            
+            return null;
+        },
+        
+        /**
+         * Get session ID from various sources
+         */
+        getSessionId() {
+            // Try multiple sources for session ID
+            const sources = [
+                // 1. Check for session in cookies
+                () => this.getCookie('JSESSIONID'),
+                // 2. Check for Oracle session
+                () => this.getCookie('oracle_session_id'),
+                // 3. Check for Fusion session
+                () => this.getCookie('fusion_session_id')
+            ];
+            
+            for (const source of sources) {
+                try {
+                    const sessionId = source();
+                    if (sessionId) {
+                        console.log('[OracleAPI] Found session ID from source');
+                        return sessionId;
+                    }
+                } catch (error) {
+                    // Continue to next source
+                }
+            }
+            
+            return null;
+        },
+        
+        /**
+         * Get cookie value by name
+         */
+        getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        },
+        
+        /**
+         * Test Oracle API authentication
+         */
+        async testAuthentication() {
+            console.log('[OracleAPI] Testing authentication...');
+            
+            try {
+                // Test 1: Check if we can access Oracle REST API
+                const authResult = await this.testRestApiAuth();
+                if (!authResult.success) {
+                    return authResult;
+                }
+                
+                // Test 2: Check if we can access activity data
+                const activityResult = await this.testActivityApiAccess();
+                if (!activityResult.success) {
+                    return activityResult;
+                }
+                
+                // Test 3: Check user permissions
+                const permissionResult = await this.testUserPermissions();
+                if (!permissionResult.success) {
+                    return permissionResult;
+                }
+                
+                console.log('[OracleAPI] All authentication tests passed');
+                return {
+                    success: true,
+                    message: 'Oracle authentication successful',
+                    userInfo: permissionResult.userInfo
+                };
+                
+            } catch (error) {
+                console.error('[OracleAPI] Authentication test failed:', error);
+                return {
+                    success: false,
+                    message: 'Authentication test failed: ' + error.message,
+                    error: error
+                };
+            }
+        },
+        
+        /**
+         * Test Oracle REST API authentication
+         */
+        async testRestApiAuth() {
+            const endpoints = [
+                '/rest/ofscCore/v1/activities',
+                '/rest/ofscCore/v1/resources',
+                '/rest/ofscCore/v1/context'
+            ];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await this.makeApiCall(endpoint, 'GET');
+                    
+                    if (response.status === 200) {
+                        console.log(`[OracleAPI] REST API test successful: ${endpoint}`);
+                        return { success: true, endpoint: endpoint };
+                    }
+                    
+                    if (response.status === 401) {
+                        console.error(`[OracleAPI] Authentication failed: ${endpoint}`);
+                        return { 
+                            success: false, 
+                            message: 'Invalid authentication token',
+                            status: 401,
+                            endpoint: endpoint
+                        };
+                    }
+                    
+                    if (response.status === 403) {
+                        console.error(`[OracleAPI] Authorization failed: ${endpoint}`);
+                        return { 
+                            success: false, 
+                            message: 'Insufficient permissions',
+                            status: 403,
+                            endpoint: endpoint
+                        };
+                    }
+                    
+                } catch (error) {
+                    console.warn(`[OracleAPI] Endpoint test failed: ${endpoint}`, error);
+                }
+            }
+            
+            return { 
+                success: false, 
+                message: 'No Oracle REST API endpoints accessible',
+                status: 0
+            };
+        },
+        
+        /**
+         * Test activity API access
+         */
+        async testActivityApiAccess() {
+            try {
+                const response = await this.makeApiCall('/rest/ofscCore/v1/activities?limit=1', 'GET');
+                
+                if (response.status === 200) {
+                    const data = await response.json();
+                    console.log('[OracleAPI] Activity API access successful');
+                    return { 
+                        success: true, 
+                        hasActivities: data.items && data.items.length > 0 
+                    };
+                }
+                
+                return { 
+                    success: false, 
+                    message: 'Cannot access activity data',
+                    status: response.status
+                };
+                
+            } catch (error) {
+                return { 
+                    success: false, 
+                    message: 'Activity API test failed: ' + error.message 
+                };
+            }
+        },
+        
+        /**
+         * Test user permissions
+         */
+        async testUserPermissions() {
+            try {
+                const response = await this.makeApiCall('/rest/ofscCore/v1/context', 'GET');
+                
+                if (response.status === 200) {
+                    const context = await response.json();
+                    console.log('[OracleAPI] User context retrieved:', context);
+                    
+                    return {
+                        success: true,
+                        userInfo: {
+                            userId: context.userId,
+                            userName: context.userName,
+                            userType: context.userType,
+                            permissions: context.permissions || []
+                        }
+                    };
+                }
+                
+                return { 
+                    success: false, 
+                    message: 'Cannot retrieve user context',
+                    status: response.status
+                };
+                
+            } catch (error) {
+                return { 
+                    success: false, 
+                    message: 'Permission test failed: ' + error.message 
+                };
+            }
+        },
+        
+        /**
+         * Make authenticated API call to Oracle
+         */
+        async makeApiCall(endpoint, method = 'GET', body = null) {
+            const url = `${this.baseUrl}${endpoint}`;
+            const headers = this.getAuthHeaders();
+            
+            const options = {
+                method: method,
+                headers: headers,
+                credentials: 'include' // Include cookies for session auth
+            };
+            
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+            
+            console.log(`[OracleAPI] Making ${method} request to: ${url}`);
+            
+            const response = await fetch(url, options);
+            
+            console.log(`[OracleAPI] Response status: ${response.status} for ${endpoint}`);
+            
+            return response;
+        },
+        
+        /**
+         * Get authentication headers
+         */
+        getAuthHeaders() {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            };
+            
+            // Add auth token if available
+            if (this.authToken) {
+                headers['Authorization'] = `Bearer ${this.authToken}`;
+            }
+            
+            // Add session ID if available
+            if (this.sessionId) {
+                headers['X-Session-ID'] = this.sessionId;
+            }
+            
+            return headers;
+        },
+        
+        /**
+         * Get activity data from Oracle
+         */
+        async getActivityData(activityId = null) {
+            try {
+                const endpoint = activityId 
+                    ? `/rest/ofscCore/v1/activities/${activityId}`
+                    : '/rest/ofscCore/v1/activities?limit=10';
+                
+                const response = await this.makeApiCall(endpoint, 'GET');
+                
+                if (response.status === 200) {
+                    const data = await response.json();
+                    console.log('[OracleAPI] Activity data retrieved:', data);
+                    return { success: true, data: data };
+                }
+                
+                return { 
+                    success: false, 
+                    message: 'Failed to retrieve activity data',
+                    status: response.status
+                };
+                
+            } catch (error) {
+                return { 
+                    success: false, 
+                    message: 'Activity data request failed: ' + error.message 
+                };
+            }
+        },
+        
+        /**
+         * Update activity data in Oracle
+         */
+        async updateActivityData(activityId, updates) {
+            try {
+                const endpoint = `/rest/ofscCore/v1/activities/${activityId}`;
+                const response = await this.makeApiCall(endpoint, 'PATCH', updates);
+                
+                if (response.status === 200) {
+                    const data = await response.json();
+                    console.log('[OracleAPI] Activity updated successfully:', data);
+                    return { success: true, data: data };
+                }
+                
+                return { 
+                    success: false, 
+                    message: 'Failed to update activity',
+                    status: response.status
+                };
+                
+            } catch (error) {
+                return { 
+                    success: false, 
+                    message: 'Activity update failed: ' + error.message 
+                };
+            }
+        }
+    };
 }
 
 // Export for use in main plugin script

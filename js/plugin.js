@@ -84,6 +84,12 @@ class ActivityPropertiesPlugin {
             this.onPluginReady(data);
         });
         
+        // Standalone mode
+        this.api.on('standaloneMode', () => {
+            console.log('[Plugin] Running in standalone mode');
+            this.onStandaloneMode();
+        });
+        
         // Activity data loaded
         this.api.on('activityLoaded', (data) => {
             console.log('[Plugin] Activity data loaded');
@@ -156,7 +162,15 @@ class ActivityPropertiesPlugin {
      */
     onPluginReady(data) {
         console.log('[Plugin] Plugin ready, waiting for activity data...');
-        this.updateConnectionStatus(true);
+        
+        // Check if we're in development or standalone mode
+        if (this.api.isDevelopmentMode) {
+            this.updateConnectionStatus('development');
+        } else if (this.api.isStandaloneMode) {
+            this.updateConnectionStatus('standalone');
+        } else {
+            this.updateConnectionStatus(true);
+        }
         
         // If we don't receive activity data within 5 seconds, request it
         setTimeout(() => {
@@ -165,6 +179,47 @@ class ActivityPropertiesPlugin {
                 this.api.requestActivityData();
             }
         }, 5000);
+    }
+
+    /**
+     * Handle standalone mode - show demo data
+     */
+    onStandaloneMode() {
+        console.log('[Plugin] Running in standalone mode - showing demo data');
+        
+        // Show demo data
+        this.activityData = this.getDemoData();
+        this.updateUI();
+        this.hideLoadingState();
+        this.showMainContent();
+        
+        // Update connection status to show standalone mode
+        this.updateConnectionStatus('standalone');
+        
+        // Show standalone mode indicator
+        this.showStandaloneIndicator();
+    }
+
+    /**
+     * Get demo data for standalone mode
+     */
+    getDemoData() {
+        return {
+            aid: 'DEMO-001',
+            activityId: 'DEMO-001',
+            astatus: 'Scheduled',
+            status: 'Scheduled'
+        };
+    }
+
+    /**
+     * Show standalone mode indicator
+     */
+    showStandaloneIndicator() {
+        const header = document.querySelector('.plugin-header h4');
+        if (header) {
+            header.innerHTML = 'Activity Properties <span class="badge bg-info ms-2">Demo Mode</span>';
+        }
     }
 
     /**
@@ -459,13 +514,21 @@ class ActivityPropertiesPlugin {
     /**
      * Update connection status display
      */
-    updateConnectionStatus(isConnected) {
+    updateConnectionStatus(status) {
         const element = this.elements.connectionStatus;
         if (!element) return;
         
         const icon = element.querySelector('[data-feather]');
         
-        if (isConnected) {
+        if (status === 'development') {
+            element.className = 'badge bg-primary';
+            element.innerHTML = '<i data-feather="code" class="small-icon"></i> Dev Mode';
+            if (icon) feather.replace();
+        } else if (status === 'standalone') {
+            element.className = 'badge bg-info';
+            element.innerHTML = '<i data-feather="monitor" class="small-icon"></i> Demo Mode';
+            if (icon) feather.replace();
+        } else if (status === true) {
             element.className = 'badge bg-success';
             element.innerHTML = '<i data-feather="wifi" class="small-icon"></i> Online';
             if (icon) feather.replace();
