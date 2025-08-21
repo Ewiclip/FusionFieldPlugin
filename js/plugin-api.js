@@ -15,8 +15,26 @@ class PluginAPI {
         this.maxRetries = 3;
         this.readyTimeout = null;
         
+        // Development mode detection
+        this.isDevelopmentMode = this.detectDevelopmentMode();
+        
         // Initialize API
         this.init();
+    }
+
+    /**
+     * Detect if running in development mode (not inside Oracle Fusion Field Service)
+     */
+    detectDevelopmentMode() {
+        // Check if we're running standalone or in Oracle environment
+        try {
+            return window.self === window.top || 
+                   location.hostname === 'localhost' || 
+                   location.hostname.includes('replit') ||
+                   location.hostname.includes('127.0.0.1');
+        } catch (e) {
+            return false; // Probably in iframe, assume production
+        }
     }
 
     /**
@@ -25,21 +43,38 @@ class PluginAPI {
     init() {
         console.log('[PluginAPI] Initializing Oracle Fusion Field Service Plugin API');
         
+        if (this.isDevelopmentMode) {
+            console.log('[PluginAPI] Running in DEVELOPMENT MODE - simulating Oracle responses');
+        }
+        
         // Set up message listener
         window.addEventListener('message', this.handleMessage.bind(this), false);
         
-        // Set up ready timeout (2 minutes as per Oracle documentation)
+        // Set up ready timeout (2 minutes as per Oracle documentation, shorter in dev mode)
+        const timeoutDuration = this.isDevelopmentMode ? 5000 : 120000;
         this.readyTimeout = setTimeout(() => {
             if (!this.isReady) {
-                this.handleError(new Error('Plugin ready timeout - failed to initialize within 2 minutes'));
+                if (this.isDevelopmentMode) {
+                    console.log('[PluginAPI] Development mode - simulating plugin ready');
+                    this.simulatePluginReady();
+                } else {
+                    this.handleError(new Error('Plugin ready timeout - failed to initialize within 2 minutes'));
+                }
             }
-        }, 120000); // 2 minutes
+        }, timeoutDuration);
         
         // Send ready message
         this.sendReady();
         
         // Set up connection monitoring
         this.setupConnectionMonitoring();
+        
+        // In development mode, simulate Oracle responses after a delay
+        if (this.isDevelopmentMode) {
+            setTimeout(() => {
+                this.simulateOracleResponses();
+            }, 2000);
+        }
     }
 
     /**
@@ -72,16 +107,16 @@ class PluginAPI {
      * Handle incoming messages from Oracle Fusion Field Service
      */
     handleMessage(event) {
-        console.log('[PluginAPI] Received message:', event.data);
-        
         try {
             const data = event.data;
             
-            // Validate message format
-            if (!data || typeof data !== 'object') {
-                console.warn('[PluginAPI] Invalid message format received');
+            // Filter out non-Oracle messages (browser events, etc.)
+            if (!data || typeof data !== 'object' || !data.method) {
+                // Don't log these as they're likely browser events
                 return;
             }
+            
+            console.log('[PluginAPI] Received Oracle message:', data);
 
             // Handle different message types
             switch (data.method) {
@@ -199,6 +234,14 @@ class PluginAPI {
             return;
         }
         
+        if (this.isDevelopmentMode) {
+            console.log('[PluginAPI] Development mode - providing mock activity data');
+            setTimeout(() => {
+                this.simulateActivityData();
+            }, 500);
+            return;
+        }
+        
         const message = {
             apiVersion: this.apiVersion,
             method: 'getActivityData',
@@ -215,6 +258,14 @@ class PluginAPI {
     requestActivityProperties(properties = []) {
         if (!this.isReady) {
             console.warn('[PluginAPI] Cannot request activity properties - plugin not ready');
+            return;
+        }
+        
+        if (this.isDevelopmentMode) {
+            console.log('[PluginAPI] Development mode - providing mock activity properties');
+            setTimeout(() => {
+                this.simulateActivityData();
+            }, 500);
             return;
         }
         
@@ -423,6 +474,56 @@ class PluginAPI {
      */
     isPluginConnected() {
         return this.isConnected;
+    }
+
+    /**
+     * Simulate Oracle Fusion Field Service responses for development mode
+     */
+    simulateOracleResponses() {
+        if (!this.isDevelopmentMode) return;
+        
+        console.log('[PluginAPI] Simulating Oracle Fusion Field Service responses');
+        
+        // Simulate initEnd message
+        this.handleInitEnd({
+            method: 'initEnd',
+            apiVersion: this.apiVersion
+        });
+        
+        // Simulate activity data after a short delay
+        setTimeout(() => {
+            this.simulateActivityData();
+        }, 1000);
+    }
+
+    /**
+     * Simulate plugin ready state
+     */
+    simulatePluginReady() {
+        if (!this.isDevelopmentMode) return;
+        
+        console.log('[PluginAPI] Simulating plugin ready state');
+        this.simulateOracleResponses();
+    }
+
+    /**
+     * Simulate activity data from Oracle
+     */
+    simulateActivityData() {
+        if (!this.isDevelopmentMode) return;
+        
+        const mockActivityData = {
+            aid: 'ACT-2025-001234',
+            astatus: 'pending'
+        };
+        
+        console.log('[PluginAPI] Simulating activity data:', mockActivityData);
+        
+        // Simulate open message with activity data
+        this.handleOpen({
+            method: 'open',
+            activity: mockActivityData
+        });
     }
 
     /**
