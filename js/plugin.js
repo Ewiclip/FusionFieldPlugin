@@ -162,16 +162,74 @@ class ActivityPropertiesPlugin {
      * Handle plugin ready event
      */
     onPluginReady(data) {
-        console.log('[Plugin] Plugin ready, waiting for activity data...');
-        this.updateConnectionStatus(true);
+        console.log('[Plugin] Plugin ready, mode:', data.mode || 'oracle');
         
-        // If we don't receive activity data within 5 seconds, request it
-        setTimeout(() => {
-            if (!this.activityData || Object.keys(this.activityData).length === 0) {
-                console.log('[Plugin] No activity data received, requesting...');
-                this.api.requestActivityData();
-            }
-        }, 5000);
+        if (data.mode === 'standalone') {
+            this.handleStandaloneMode();
+        } else {
+            this.updateConnectionStatus(true);
+            
+            // If we don't receive activity data within 5 seconds, request it
+            setTimeout(() => {
+                if (!this.activityData || Object.keys(this.activityData).length === 0) {
+                    console.log('[Plugin] No activity data received, requesting...');
+                    this.api.requestActivityData();
+                }
+            }, 5000);
+        }
+    }
+
+    /**
+     * Handle standalone mode - show demo data
+     */
+    handleStandaloneMode() {
+        console.log('[Plugin] Running in standalone mode - showing demo data');
+        
+        // Show demo data
+        this.activityData = this.getDemoData();
+        this.updateUI();
+        this.hideLoadingState();
+        this.showMainContent();
+        
+        // Update connection status to show standalone mode
+        this.updateConnectionStatus('standalone');
+        
+        // Show standalone mode indicator
+        this.showStandaloneIndicator();
+    }
+
+    /**
+     * Get demo data for standalone mode
+     */
+    getDemoData() {
+        return {
+            aid: 'DEMO-001',
+            activityId: 'DEMO-001',
+            cname: 'Demo Customer',
+            customerName: 'Demo Customer',
+            astatus: 'Scheduled',
+            status: 'Scheduled',
+            sla_window_start: '2024-01-15T09:00:00Z',
+            sla_window_end: '2024-01-15T11:00:00Z',
+            atype: 'Service Call',
+            activityType: 'Service Call',
+            duration: '2 hours',
+            location: '123 Demo Street, Demo City, DC 12345',
+            resources: [
+                { name: 'John Smith', rid: 'RES-001' }
+            ],
+            priority: 'Medium'
+        };
+    }
+
+    /**
+     * Show standalone mode indicator
+     */
+    showStandaloneIndicator() {
+        const header = document.querySelector('.plugin-header h4');
+        if (header) {
+            header.innerHTML = 'Activity Properties <span class="badge bg-info ms-2">Demo Mode</span>';
+        }
     }
 
     /**
@@ -473,13 +531,17 @@ class ActivityPropertiesPlugin {
     /**
      * Update connection status display
      */
-    updateConnectionStatus(isConnected) {
+    updateConnectionStatus(status) {
         const element = this.elements.connectionStatus;
         if (!element) return;
         
         const icon = element.querySelector('[data-feather]');
         
-        if (isConnected) {
+        if (status === 'standalone') {
+            element.className = 'badge bg-info';
+            element.innerHTML = '<i data-feather="monitor" class="small-icon"></i> Demo Mode';
+            if (icon) feather.replace();
+        } else if (status === true) {
             element.className = 'badge bg-success';
             element.innerHTML = '<i data-feather="wifi" class="small-icon"></i> Online';
             if (icon) feather.replace();

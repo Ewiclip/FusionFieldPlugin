@@ -8,6 +8,9 @@ class PluginAPI {
         this.apiVersion = 1;
         this.isReady = false;
         this.isConnected = false;
+        this.isStandaloneMode = false;
+        this.isOracleConnected = false;
+        this.oracleTestInProgress = false;
         this.activityData = null;
         this.callbacks = {};
         this.messageQueue = [];
@@ -31,7 +34,8 @@ class PluginAPI {
         // Set up ready timeout (2 minutes as per Oracle documentation)
         this.readyTimeout = setTimeout(() => {
             if (!this.isReady) {
-                this.handleError(new Error('Plugin ready timeout - failed to initialize within 2 minutes'));
+                console.warn('[PluginAPI] Oracle connection timeout - running in standalone mode');
+                this.handleOracleTimeout();
             }
         }, 120000); // 2 minutes
         
@@ -40,6 +44,123 @@ class PluginAPI {
         
         // Set up connection monitoring
         this.setupConnectionMonitoring();
+        
+        // Quick Oracle availability check (5 seconds)
+        setTimeout(() => {
+            this.checkOracleAvailability();
+        }, 5000);
+    }
+
+    /**
+     * Handle Oracle timeout - plugin is running standalone
+     */
+    handleOracleTimeout() {
+        this.isReady = true;
+        this.isConnected = false;
+        this.isStandaloneMode = true;
+        
+        // Clear ready timeout
+        if (this.readyTimeout) {
+            clearTimeout(this.readyTimeout);
+            this.readyTimeout = null;
+        }
+        
+        console.log('[PluginAPI] Running in standalone mode - Oracle not available');
+        this.triggerEvent('ready', { mode: 'standalone' });
+    }
+
+    /**
+     * Check if Oracle is actually available
+     */
+    checkOracleAvailability() {
+        // Try to detect if we're running within Oracle Fusion Field Service
+        const isInOracleFrame = this.detectOracleFrame();
+        
+        if (!isInOracleFrame) {
+            console.log('[PluginAPI] Not running in Oracle frame - standalone mode');
+            this.handleOracleTimeout();
+            return;
+        }
+        
+        // Try a simple ping to Oracle
+        this.pingOracle();
+    }
+
+    /**
+     * Detect if we're running within Oracle Fusion Field Service
+     */
+    detectOracleFrame() {
+        try {
+            // Check if we're in an iframe
+            if (window.self !== window.top) {
+                // Check for Oracle-specific window properties or frame structure
+                const parentUrl = window.parent.location.href;
+                const currentUrl = window.location.href;
+                
+                // Look for Oracle Fusion Field Service indicators
+                const oracleIndicators = [
+                    'oracle.com',
+                    'fusion',
+                    'ofsc',
+                    'fieldservice',
+                    'activity'
+                ];
+                
+                const hasOracleIndicator = oracleIndicators.some(indicator => 
+                    parentUrl.toLowerCase().includes(indicator) || 
+                    currentUrl.toLowerCase().includes(indicator)
+                );
+                
+                console.log('[PluginAPI] Frame detection:', {
+                    inIframe: true,
+                    parentUrl: parentUrl,
+                    hasOracleIndicator: hasOracleIndicator
+                });
+                
+                return hasOracleIndicator;
+            }
+            
+            return false;
+        } catch (error) {
+            console.warn('[PluginAPI] Error detecting Oracle frame:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Ping Oracle to test connectivity
+     */
+    pingOracle() {
+        const pingMessage = {
+            apiVersion: this.apiVersion,
+            method: 'ping',
+            callId: this.generateCallId()
+        };
+        
+        console.log('[PluginAPI] Pinging Oracle...');
+        
+        // Set up ping timeout
+        const pingTimeout = setTimeout(() => {
+            console.warn('[PluginAPI] Oracle ping timeout - no response received');
+            this.handleOracleTimeout();
+        }, 10000); // 10 second ping timeout
+        
+        // Send ping and listen for response
+        this.postMessage(pingMessage);
+        
+        // Listen for ping response
+        const originalHandleMessage = this.handleMessage.bind(this);
+        const pingHandler = (event) => {
+            if (event.data && event.data.method === 'pong') {
+                clearTimeout(pingTimeout);
+                console.log('[PluginAPI] Oracle ping successful');
+                window.removeEventListener('message', pingHandler);
+                // Restore original handler
+                window.addEventListener('message', originalHandleMessage, false);
+            }
+        };
+        
+        window.addEventListener('message', pingHandler, false);
     }
 
     /**
@@ -337,9 +458,18 @@ class PluginAPI {
      * Check connection status
      */
     checkConnection() {
-        // Simple connection check - can be enhanced with actual API ping
         const wasConnected = this.isConnected;
-        this.isConnected = navigator.onLine;
+        
+        // Check basic internet connectivity
+        const hasInternet = navigator.onLine;
+        
+        // If we're in standalone mode, just use internet status
+        if (this.isStandaloneMode) {
+            this.isConnected = hasInternet;
+        } else {
+            // For Oracle mode, we need both internet and Oracle connectivity
+            this.isConnected = hasInternet && this.isOracleConnected;
+        }
         
         if (wasConnected !== this.isConnected) {
             if (this.isConnected) {
@@ -348,6 +478,53 @@ class PluginAPI {
                 this.triggerEvent('connectionLost');
             }
         }
+        
+        // If we have internet but Oracle connection is uncertain, test it
+        if (hasInternet && !this.isStandaloneMode && !this.isOracleConnected) {
+            this.testOracleConnection();
+        }
+    }
+
+    /**
+     * Test Oracle connection with a simple API call
+     */
+    testOracleConnection() {
+        if (this.oracleTestInProgress) return;
+        
+        this.oracleTestInProgress = true;
+        
+        const testMessage = {
+            apiVersion: this.apiVersion,
+            method: 'testConnection',
+            callId: this.generateCallId()
+        };
+        
+        console.log('[PluginAPI] Testing Oracle connection...');
+        
+        // Set up test timeout
+        const testTimeout = setTimeout(() => {
+            this.oracleTestInProgress = false;
+            this.isOracleConnected = false;
+            console.warn('[PluginAPI] Oracle connection test failed - timeout');
+            this.triggerEvent('oracleConnectionLost');
+        }, 15000); // 15 second test timeout
+        
+        // Send test message
+        this.postMessage(testMessage);
+        
+        // Listen for test response
+        const testHandler = (event) => {
+            if (event.data && event.data.method === 'testConnectionResponse') {
+                clearTimeout(testTimeout);
+                this.oracleTestInProgress = false;
+                this.isOracleConnected = true;
+                console.log('[PluginAPI] Oracle connection test successful');
+                this.triggerEvent('oracleConnectionRestored');
+                window.removeEventListener('message', testHandler);
+            }
+        };
+        
+        window.addEventListener('message', testHandler, false);
     }
 
     /**
