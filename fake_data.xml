@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<activity>
+    <activityId>IB31319</activityId>
+    <activityType>installation</activityType>
+    <stations>
+                 <station>
+             <stationId>STN001</stationId>
+             <stationName>Pole Installation Site A</stationName>
+             <location>North Field</location>
+             <status>Open</status>
+            <stationCUs>
+                <stationCU>
+                    <stationCUstockNumber>2313092</stationCUstockNumber>
+                    <stationCUDescription>ANCHOR,GUY,SCREW,14 IN</stationCUDescription>
+                                         <stationCUId>CU001</stationCUId>
+                     <stationCUType>Anchor</stationCUType>
+                     <stationCUQuantityRequired>1</stationCUQuantityRequired>
+                     <stationCUQuantityInstalled>0</stationCUQuantityInstalled>
+                     <stationCUPlannedDisposition>Remove</stationCUPlannedDisposition>
+                     <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                 </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313099</stationCUstockNumber>
+                    <stationCUDescription>ROD,ANCHOR,HELIX,1-1/2 IN SQ,5 FT,GALV STL</stationCUDescription>
+                    <stationCUId>CU002</stationCUId>
+                    <stationCUType>Rod</stationCUType>
+                    <stationCUQuantityRequired>1</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>0</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Remove</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>available</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313138</stationCUstockNumber>
+                    <stationCUDescription>ANCHOR,POLE,SQ SHFT,TRIPLE,10-12-14 IN,TRIPLE,GALV</stationCUDescription>
+                    <stationCUId>CU003</stationCUId>
+                    <stationCUType>Anchor</stationCUType>
+                    <stationCUQuantityRequired>1</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>1</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>installed</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313145</stationCUstockNumber>
+                    <stationCUDescription>CABLE,GUY,1/4 IN,7 STRAND,GALV STL</stationCUDescription>
+                    <stationCUId>CU004</stationCUId>
+                    <stationCUType>Cable</stationCUType>
+                    <stationCUQuantityRequired>2</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>1</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313152</stationCUstockNumber>
+                    <stationCUDescription>CLAMP,CABLE,1/4 IN,GUY WIRE</stationCUDescription>
+                    <stationCUId>CU005</stationCUId>
+                    <stationCUType>Clamp</stationCUType>
+                    <stationCUQuantityRequired>4</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>2</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+            </stationCUs>
+        </station>
+        
+                 <station>
+             <stationId>STN002</stationId>
+             <stationName>Pole Installation Site B</stationName>
+             <location>South Field</location>
+             <status>Open</status>
+            <stationCUs>
+                <stationCU>
+                    <stationCUstockNumber>2313200</stationCUstockNumber>
+                    <stationCUDescription>POLE,WOOD,CLASS 3,35 FT,PRESSURE TREATED</stationCUDescription>
+                    <stationCUId>CU006</stationCUId>
+                    <stationCUType>Pole</stationCUType>
+                    <stationCUQuantityRequired>1</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>0</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>available</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313207</stationCUstockNumber>
+                    <stationCUDescription>BRACKET,POLE,TRANSFORMER,HEAVY DUTY</stationCUDescription>
+                    <stationCUId>CU007</stationCUId>
+                    <stationCUType>Bracket</stationCUType>
+                    <stationCUQuantityRequired>1</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>1</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>installed</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313214</stationCUstockNumber>
+                    <stationCUDescription>BOLT,HEX,3/4 IN,GRADE 5,4 IN LG</stationCUDescription>
+                    <stationCUId>CU008</stationCUId>
+                    <stationCUType>Bolt</stationCUType>
+                    <stationCUQuantityRequired>6</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>4</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313221</stationCUstockNumber>
+                    <stationCUDescription>NUT,HEX,3/4 IN,GRADE 5</stationCUDescription>
+                    <stationCUId>CU009</stationCUId>
+                    <stationCUType>Nut</stationCUType>
+                    <stationCUQuantityRequired>6</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>4</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313228</stationCUstockNumber>
+                    <stationCUDescription>WASHER,FLAT,3/4 IN,GRADE 5</stationCUDescription>
+                    <stationCUId>CU010</stationCUId>
+                    <stationCUType>Washer</stationCUType>
+                    <stationCUQuantityRequired>12</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>8</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313235</stationCUstockNumber>
+                    <stationCUDescription>PAINT,PRIMER,RUST INHIBITOR,GALV</stationCUDescription>
+                    <stationCUId>CU011</stationCUId>
+                    <stationCUType>Paint</stationCUType>
+                    <stationCUQuantityRequired>1</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>0</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>available</stationCUStatus>
+                </stationCU>
+            </stationCUs>
+        </station>
+        
+                 <station>
+             <stationId>STN003</stationId>
+             <stationName>Transformer Installation Site</stationName>
+             <location>East Field</location>
+             <status>Complete</status>
+            <stationCUs>
+                <stationCU>
+                    <stationCUstockNumber>2313300</stationCUstockNumber>
+                    <stationCUDescription>TRANSFORMER,PAD MOUNT,75 KVA,12.47 KV</stationCUDescription>
+                    <stationCUId>CU012</stationCUId>
+                    <stationCUType>Transformer</stationCUType>
+                    <stationCUQuantityRequired>1</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>1</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>installed</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313307</stationCUstockNumber>
+                    <stationCUDescription>PAD,CONCRETE,TRANSFORMER,6X6 FT</stationCUDescription>
+                    <stationCUId>CU013</stationCUId>
+                    <stationCUType>Pad</stationCUType>
+                    <stationCUQuantityRequired>1</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>1</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>installed</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313314</stationCUstockNumber>
+                    <stationCUDescription>CABLE,PRIMARY,15 KV,1/C,500 KCMIL</stationCUDescription>
+                    <stationCUId>CU014</stationCUId>
+                    <stationCUType>Cable</stationCUType>
+                    <stationCUQuantityRequired>50</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>45</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313321</stationCUstockNumber>
+                    <stationCUDescription>TERMINATION,15 KV,500 KCMIL,COLD SHRINK</stationCUDescription>
+                    <stationCUId>CU015</stationCUId>
+                    <stationCUType>Termination</stationCUType>
+                    <stationCUQuantityRequired>2</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>1</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313328</stationCUstockNumber>
+                    <stationCUDescription>GROUND ROD,COPPER,8 FT,5/8 IN</stationCUDescription>
+                    <stationCUId>CU016</stationCUId>
+                    <stationCUType>Ground Rod</stationCUType>
+                    <stationCUQuantityRequired>2</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>2</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>installed</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313335</stationCUstockNumber>
+                    <stationCUDescription>WIRE,GROUND,COPPER,4/0 AWG</stationCUDescription>
+                    <stationCUId>CU017</stationCUId>
+                    <stationCUType>Wire</stationCUType>
+                    <stationCUQuantityRequired>20</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>18</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313342</stationCUstockNumber>
+                    <stationCUDescription>CLAMP,GROUND,4/0 AWG,COPPER</stationCUDescription>
+                    <stationCUId>CU018</stationCUId>
+                    <stationCUType>Clamp</stationCUType>
+                    <stationCUQuantityRequired>4</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>3</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+            </stationCUs>
+        </station>
+        
+                 <station>
+             <stationId>STN004</stationId>
+             <stationName>Switchgear Installation Site</stationName>
+             <location>West Field</location>
+             <status>Open</status>
+            <stationCUs>
+                <stationCU>
+                    <stationCUstockNumber>2313400</stationCUstockNumber>
+                    <stationCUDescription>SWITCHGEAR,METAL CLAD,15 KV,1200A</stationCUDescription>
+                    <stationCUId>CU019</stationCUId>
+                    <stationCUType>Switchgear</stationCUType>
+                    <stationCUQuantityRequired>1</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>0</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>available</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313407</stationCUstockNumber>
+                    <stationCUDescription>BREAKER,VACUUM,15 KV,1200A</stationCUDescription>
+                    <stationCUId>CU020</stationCUId>
+                    <stationCUType>Breaker</stationCUType>
+                    <stationCUQuantityRequired>3</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>2</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313414</stationCUstockNumber>
+                    <stationCUDescription>RELAY,PROTECTION,OVER CURRENT</stationCUDescription>
+                    <stationCUId>CU021</stationCUId>
+                    <stationCUType>Relay</stationCUType>
+                    <stationCUQuantityRequired>3</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>1</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313421</stationCUstockNumber>
+                    <stationCUDescription>CT,CURRENT,15 KV,1200:5</stationCUDescription>
+                    <stationCUId>CU022</stationCUId>
+                    <stationCUType>Current Transformer</stationCUType>
+                    <stationCUQuantityRequired>6</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>4</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313428</stationCUstockNumber>
+                    <stationCUDescription>PT,VOLTAGE,15 KV,120:1</stationCUDescription>
+                    <stationCUId>CU023</stationCUId>
+                    <stationCUType>Voltage Transformer</stationCUType>
+                    <stationCUQuantityRequired>3</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>2</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313435</stationCUstockNumber>
+                    <stationCUDescription>WIRE,CONTROL,18 AWG,SHIELDED</stationCUDescription>
+                    <stationCUId>CU024</stationCUId>
+                    <stationCUType>Wire</stationCUType>
+                    <stationCUQuantityRequired>500</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>350</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313442</stationCUstockNumber>
+                    <stationCUDescription>CONDUIT,EMT,1 IN,10 FT</stationCUDescription>
+                    <stationCUId>CU025</stationCUId>
+                    <stationCUType>Conduit</stationCUType>
+                    <stationCUQuantityRequired>20</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>15</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+                <stationCU>
+                    <stationCUstockNumber>2313449</stationCUstockNumber>
+                    <stationCUDescription>FITTING,CONDUIT,1 IN,90 DEG</stationCUDescription>
+                    <stationCUId>CU026</stationCUId>
+                    <stationCUType>Fitting</stationCUType>
+                    <stationCUQuantityRequired>40</stationCUQuantityRequired>
+                    <stationCUQuantityInstalled>30</stationCUQuantityInstalled>
+                    <stationCUPlannedDisposition>Install</stationCUPlannedDisposition>
+                    <stationCUMaterialWasNotUsed>false</stationCUMaterialWasNotUsed>
+                    <stationCUStatus>in_progress</stationCUStatus>
+                </stationCU>
+            </stationCUs>
+        </station>
+    </stations>
+</activity>

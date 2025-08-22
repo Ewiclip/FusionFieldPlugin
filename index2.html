@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Stations Viewer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Activity Stations Viewer</h1>
+            <p>View and manage station information</p>
+        </div>
+        
+        <div id="activityInfo" class="activity-info">
+            <!-- Activity information will be displayed here -->
+        </div>
+        
+        <div class="controls">
+                    <div class="summary-stats">
+            <div class="stat-item">
+                <span class="stat-label">Total Stations:</span>
+                <span id="totalStations" class="stat-value">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Total CUs:</span>
+                <span id="totalCUs" class="stat-value">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Open Stations:</span>
+                <span id="openStations" class="stat-value">-</span>
+            </div>
+                                <div class="stat-item">
+                        <span class="stat-label">Complete Stations:</span>
+                        <span id="completeStations" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Checked Out Stations:</span>
+                        <span id="checkedOutStations" class="stat-value">-</span>
+                    </div>
+        </div>
+        
+                        <div class="filter-controls">
+                    <div class="filter-checkboxes">
+                        <label class="filter-checkbox">
+                            <input type="checkbox" id="hideCompleteStations" onchange="toggleCompleteStations()">
+                            <span class="checkmark"></span>
+                            Hide Complete Stations
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" id="hideCheckedOutStations" onchange="toggleCompleteStations()">
+                            <span class="checkmark"></span>
+                            Hide Checked Out By Others
+                        </label>
+                    </div>
+                </div>
+        </div>
+        
+                 <div id="stationsContainer">
+             <div class="loading">Loading stations data...</div>
+         </div>
+     </div>
+
+     <!-- Search Modal -->
+     <div id="searchModal" class="search-modal">
+         <div class="search-modal-content">
+             <div class="search-modal-header">
+                 <h3>Search PreValidated Materials</h3>
+                 <span class="search-modal-close" onclick="closeSearchModal()">&times;</span>
+             </div>
+             <div class="search-modal-body">
+                 <div class="search-inputs">
+                     <div class="search-input-group">
+                         <label for="searchStockNumber">Stock Number:</label>
+                         <input type="text" id="searchStockNumber" placeholder="Enter stock number..." onkeyup="filterSearchResults()">
+                     </div>
+                     <div class="search-input-group">
+                         <label for="searchDescription">Description:</label>
+                         <input type="text" id="searchDescription" placeholder="Enter description..." onkeyup="filterSearchResults()">
+                     </div>
+                 </div>
+                 <div class="search-results">
+                     <div id="searchResultsList"></div>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+                <script src="fake_data.js"></script>
+            <script src="plugin.js"></script>
+        </body>
+        </html>
