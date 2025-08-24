@@ -803,7 +803,26 @@
 
     function toggleCompleteStations() {
         if (globalStationsData) {
+            // Preserve checkbox states before re-rendering
+            const hideCompleteCheckbox = document.getElementById('hideCompleteStations');
+            const hideCheckedOutCheckbox = document.getElementById('hideCheckedOutStations');
+            const hideCompleteState = hideCompleteCheckbox ? hideCompleteCheckbox.checked : false;
+            const hideCheckedOutState = hideCheckedOutCheckbox ? hideCheckedOutCheckbox.checked : false;
+            
             renderMaterialsView();
+            
+            // Restore checkbox states after re-rendering
+            setTimeout(() => {
+                const newHideCompleteCheckbox = document.getElementById('hideCompleteStations');
+                const newHideCheckedOutCheckbox = document.getElementById('hideCheckedOutStations');
+                
+                if (newHideCompleteCheckbox) {
+                    newHideCompleteCheckbox.checked = hideCompleteState;
+                }
+                if (newHideCheckedOutCheckbox) {
+                    newHideCheckedOutCheckbox.checked = hideCheckedOutState;
+                }
+            }, 0);
         }
     }
 
@@ -830,11 +849,8 @@
         // Clear previous content
         dynamicContent.innerHTML = "";
 
-        if (showMaterialsView) {
-            renderMaterialsView();
-        } else {
-            renderBasicActivityView(activity);
-        }
+        // Always show materials view
+        renderMaterialsView();
     }
 
     // Render basic activity view (original functionality)
@@ -938,31 +954,18 @@
         dynamicContent.innerHTML = content;
     }
 
-    // Toggle between basic and materials view
-    function toggleMaterialsView() {
-        showMaterialsView = !showMaterialsView;
-        
-        if (showMaterialsView) {
-            // Load materials data if not already loaded
-            if (!globalStationsData) {
-                loadXMLData().then(data => {
-                    globalStationsData = data.stations;
-                    globalActivityData = data.activity;
-                    renderMaterialsView();
-                }).catch(error => {
-                    console.error('Error loading materials data:', error);
-                    document.getElementById("dynamicContent").innerHTML = 
-                        '<div class="error">Error loading materials data: ' + error + '</div>';
-                });
-            } else {
-                renderMaterialsView();
-            }
-        } else {
-            // Switch back to basic view
-            if (latestOpen && latestOpen.activity) {
-                renderBasicActivityView(latestOpen.activity);
-            }
-        }
+    // Initialize materials view (always show materials)
+    function initializeMaterialsView() {
+        // Always load materials data fresh
+        loadXMLData().then(data => {
+            globalStationsData = data.stations;
+            globalActivityData = data.activity;
+            renderMaterialsView();
+        }).catch(error => {
+            console.error('Error loading materials data:', error);
+            document.getElementById("dynamicContent").innerHTML = 
+                '<div class="error">Error loading materials data: ' + error + '</div>';
+        });
     }
 
     // -----------------------------
@@ -978,6 +981,14 @@
       // Optional: request only specific data to reduce payload size
       // dataItems: [{ entity: "activity", properties: fieldsToShow }]
     });
+
+    // Fallback: Auto-load materials data after a reasonable delay even if OFS doesn't respond
+    setTimeout(() => {
+      if (!globalStationsData) {
+        console.log('Fallback: Loading materials data after timeout');
+        initializeMaterialsView();
+      }
+    }, 2000);
 
     // Listen for messages from OFS
     window.addEventListener("message", function (evt) {
@@ -996,6 +1007,10 @@
       // OFS init → acknowledge so the host can complete its init flow
       if (data.method === "init") {
         send({ apiVersion: 1, method: "initEnd" });
+        // Auto-load materials data after init with longer delay to ensure DOM is ready
+        setTimeout(() => {
+          initializeMaterialsView();
+        }, 500);
         return;
       }
 
@@ -1011,16 +1026,8 @@
           // If invoked from a list, show the first item as an example
           renderActivity(data.activityList[0]);
         } else {
-          // Update status for no activity data
-          var statusIndicator = document.getElementById("statusIndicator");
-          if (statusIndicator) {
-            statusIndicator.innerHTML = '<span class="status-text warning">ℹ️ No activity data available</span>';
-          }
-          
-          var dynamicContent = document.getElementById("dynamicContent");
-          if (dynamicContent) {
-            dynamicContent.innerHTML = '<div class="no-data-message">No activity data was provided by OFS.</div>';
-          }
+          // Even if no activity data, still show materials view
+          initializeMaterialsView();
         }
         return;
       }
@@ -1039,18 +1046,15 @@
     var refreshBtn = document.getElementById("refreshBtn");
     if (refreshBtn) {
       refreshBtn.addEventListener("click", function () {
-        // Re-render with latest data if available
-        if (latestOpen && latestOpen.activity) {
-          renderActivity(latestOpen.activity);
-        }
+        // Re-render materials view
+        initializeMaterialsView();
       });
     }
 
+    // Hide the toggle materials button since materials view is always visible
     var toggleMaterialsBtn = document.getElementById("toggleMaterialsBtn");
     if (toggleMaterialsBtn) {
-      toggleMaterialsBtn.addEventListener("click", function () {
-        toggleMaterialsView();
-      });
+      toggleMaterialsBtn.style.display = "none";
     }
 
     // Make functions globally available for HTML onclick handlers
