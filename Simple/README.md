@@ -18,6 +18,7 @@ This Oracle Fusion Field Service plugin has been enhanced to include comprehensi
 - **Search Modal** - Search PreValidated Materials by stock number/description
 - **Progress Tracking** - Visual progress bars for material installation
 - **Status Indicators** - Color-coded station and material status
+- **Table Format** - Clean tabular display for easy data comparison
 
 ## 📁 File Structure
 
@@ -106,10 +107,12 @@ Each material includes:
 - Total CUs count
 - Open/Complete/Checked Out station counts
 
-### **Station Cards**
+### **Materials Table**
+- Clean tabular format for easy scanning
 - Color-coded status indicators
 - Progress tracking for each material
 - Checkout information display
+- Rowspan grouping by station
 
 ### **Filter Controls**
 - Hide Complete Stations
@@ -139,7 +142,8 @@ Each material includes:
 - **Responsive Design** - Works on desktop and mobile
 - **Component-Based** - Modular CSS for different UI components
 - **Status Indicators** - Color-coded visual feedback
-- **Modern Layout** - CSS Grid and Flexbox for optimal layouts
+- **Modern Layout** - CSS Grid, Flexbox, and Table layouts for optimal display
+- **Table Styling** - Professional table design with hover effects and rowspan grouping
 
 ### **Data Sources**
 - **OFS Payload** - Real activity data from Oracle Fusion Field Service
