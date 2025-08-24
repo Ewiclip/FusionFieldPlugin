@@ -1,0 +1,76 @@
+<!-- Angular Component Template for OFS Plugin -->
+<div class="app-container">
+  <!-- Loading State -->
+  <div id="loadingState" class="loading-state" *ngIf="!isConnected">
+    <div class="loading-spinner"></div>
+    <p>Connecting to Oracle Fusion Field Service...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="isConnected">
+    <!-- Header -->
+    <div class="plugin-header">
+      <h2>Activity Details</h2>
+      <div class="status-indicator">
+        <span class="status-text" [ngClass]="statusClass">
+          {{ statusMessage }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Dynamic Content -->
+    <div id="dynamicContent">
+      <!-- Debug Mode -->
+      <div *ngIf="debugShowAll" class="debug-container">
+        <pre>{{ activity | json }}</pre>
+      </div>
+
+      <!-- Normal Field Display -->
+      <div *ngIf="!debugShowAll" class="activity-details">
+        <div class="field-grid">
+          <!-- Header -->
+          <div class="field-header">Activity Details</div>
+
+          <!-- Dynamic Field Rows -->
+          <ng-container *ngFor="let field of availableFields">
+            <div class="field-label">{{ field }}</div>
+            <div class="field-value">
+              <span *ngIf="activity && activity[field] !== undefined; else noValue">
+                {{ formatFieldValue(activity[field]) }}
+              </span>
+              <ng-template #noValue>
+                <em>Not available</em>
+              </ng-template>
+            </div>
+          </ng-container>
+
+          <!-- No Fields Available -->
+          <div *ngIf="availableFields.length === 0" class="no-fields-message">
+            No requested fields were found in the payload. 
+            Ensure they're added under the plugin's Available Properties in OFS.
+          </div>
+        </div>
+      </div>
+
+      <!-- No Activity Data -->
+      <div *ngIf="!activity && !debugShowAll" class="no-data-message">
+        No activity data was provided by OFS.
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="plugin-footer">
+      <div class="button-row">
+        <button class="btn btn-primary" (click)="closePlugin()">
+          Close Plugin
+        </button>
+        <button class="btn btn-secondary" (click)="refreshData()">
+          Refresh Data
+        </button>
+        <button class="btn btn-secondary" (click)="toggleDebug()">
+          {{ debugShowAll ? 'Hide' : 'Show' }} Debug
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

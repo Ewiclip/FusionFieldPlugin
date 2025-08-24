@@ -1,0 +1,110 @@
+/* Angular Component Styles for OFS Plugin */
+
+/* Field Grid Layout */
+.field-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 6px 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+
+/* Field Header */
+.field-header {
+  grid-column: 1 / -1;
+  font-weight: 600;
+  margin-bottom: 4px;
+  background: #f8f9fa;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e9ecef;
+  color: #495057;
+}
+
+/* Field Labels */
+.field-label {
+  opacity: 0.8;
+  font-weight: 500;
+  color: #6c757d;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 16px;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+/* Field Values */
+.field-value {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  word-break: break-all;
+  padding: 8px 16px;
+  border-bottom: 1px solid #f8f9fa;
+  background: #f8f9fa;
+}
+
+/* Alternate row styling */
+.field-label:nth-child(odd):not(.field-header) {
+  background: white;
+}
+
+.field-value:nth-child(even) {
+  background: white;
+}
+
+/* Last row styling */
+.field-label:last-child,
+.field-value:last-child {
+  border-bottom: none;
+}
+
+/* No Fields Message */
+.no-fields-message {
+  grid-column: 1 / -1;
+  color: #6c757d;
+  font-style: italic;
+  padding: 16px;
+  text-align: center;
+  background: #f8f9fa;
+}
+
+/* Debug Container */
+.debug-container {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  padding: 16px;
+  margin: 0;
+}
+
+.debug-container pre {
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-x: auto;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* Activity Details Container */
+.activity-details {
+  margin-top: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .field-grid {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  
+  .field-label,
+  .field-value {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .field-header {
+    padding: 8px 12px;
+  }
+}

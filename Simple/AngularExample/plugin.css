@@ -1,0 +1,224 @@
+/* OFS Plugin Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+.app-container {
+  max-width: 100%;
+  min-height: 100vh;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e9ecef;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Header */
+.plugin-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+.plugin-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.status-indicator {
+  font-size: 12px;
+}
+
+.status-text {
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #e9ecef;
+  color: #6c757d;
+}
+
+.status-text.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-text.warning {
+  background: #fff3cd;
+  color: #856404;
+}
+
+/* Dynamic Content */
+#dynamicContent {
+  flex: 1;
+  padding: 20px;
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Activity Details */
+#activityDetails {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#activityDetails > div {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#activityDetails > div > div:first-child {
+  background: #f8f9fa;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+  color: #495057;
+}
+
+#activityDetails > div > div:not(:first-child) {
+  padding: 8px 16px;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+#activityDetails > div > div:not(:first-child):nth-child(even) {
+  background: #f8f9fa;
+}
+
+#activityDetails > div > div:last-child {
+  border-bottom: none;
+}
+
+/* Field Labels and Values */
+#activityDetails > div > div:nth-child(odd):not(:first-child) {
+  font-weight: 500;
+  color: #6c757d;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#activityDetails > div > div:nth-child(even) {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+/* Footer */
+.plugin-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+.button-row {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+  border-color: #545b62;
+}
+
+/* Debug Mode */
+#activityDetails pre {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  padding: 16px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-x: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .plugin-header,
+  .plugin-footer {
+    padding: 12px 16px;
+  }
+  
+  #dynamicContent {
+    padding: 16px;
+  }
+  
+  .button-row {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+}

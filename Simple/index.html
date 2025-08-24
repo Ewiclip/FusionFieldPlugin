@@ -1,14 +1,67 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OFS Field Service Plugin</title>
+    <link rel="stylesheet" href="plugin.css">
+  </head>
   <body>
     <div id="app" class="app-container">
-      Test — waiting for OFS…
-      <div class="button-row">
-        <button id="closeBtn">Close plugin</button>
+      <!-- Static loading state -->
+      <div id="loadingState" class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Connecting to Oracle Fusion Field Service...</p>
+      </div>
+
+      <!-- Static header -->
+      <div class="plugin-header">
+        <h2>Activity Details & Materials</h2>
+        <div class="status-indicator" id="statusIndicator">
+          <span class="status-text">Initializing...</span>
+        </div>
+      </div>
+
+      <!-- Dynamic content will be inserted here -->
+      <div id="dynamicContent"></div>
+
+      <!-- Static footer -->
+      <div class="plugin-footer">
+        <div class="button-row">
+          <button id="closeBtn" class="btn btn-primary">Close Plugin</button>
+          <button id="refreshBtn" class="btn btn-secondary">Refresh Data</button>
+          <button id="toggleMaterialsBtn" class="btn btn-secondary">Toggle Materials View</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Modal for Materials -->
+    <div id="searchModal" class="search-modal">
+      <div class="search-modal-content">
+        <div class="search-modal-header">
+          <h3>Search PreValidated Materials</h3>
+          <span class="search-modal-close" onclick="closeSearchModal()">&times;</span>
+        </div>
+        <div class="search-modal-body">
+          <div class="search-inputs">
+            <div class="search-input-group">
+              <label for="searchStockNumber">Stock Number:</label>
+              <input type="text" id="searchStockNumber" placeholder="Enter stock number..." onkeyup="filterSearchResults()">
+            </div>
+            <div class="search-input-group">
+              <label for="searchDescription">Description:</label>
+              <input type="text" id="searchDescription" placeholder="Enter description..." onkeyup="filterSearchResults()">
+            </div>
+          </div>
+          <div class="search-results">
+            <div id="searchResultsList"></div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Load our plugin logic -->
+    <script src="fake_data.js"></script>
     <script src="plugin.js"></script>
   </body>
 </html>
